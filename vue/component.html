@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Component</title>
+        <!-- <link href="css/style.css" rel="stylesheet"> -->
+        <script src="https://unpkg.com/vue"></script>
+    </head>
+    <body>
+        <div id="component1">
+            <my-component></my-component>
+        </div>
+        <hr>
+        <div id="component2">
+            <p>{{ total }}</p>
+            <button-counter v-on:increment='incrementTotal'></button-counter>
+            <button-counter v-on:increment='incrementTotal'></button-counter>
+        </div>
+        <script>
+            Vue.component('my-component', {
+                template: '<h1>Hello Component!</h1>'
+            })
+            Vue.component('button-counter',{
+                template: '<button v-on:click="incrementCounter">{{ counter }}</button>',
+                data: function () {
+                    return {
+                        counter: 0,
+                    }
+                },
+                methods: {
+                    incrementCounter: function () {
+                        this.counter += 1;
+                        this.$emit('increment');
+                    }
+                }
+            })
+            var demo1 = new Vue({
+                el: '#component1'
+            })
+            var demo2 = new Vue({
+                el: '#component2',
+                data: {
+                    total: 0,
+                },
+                methods: {
+                    incrementTotal: function () {
+                        this.total += 1;
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
