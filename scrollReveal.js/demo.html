@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      // If JavaScript is enabled, add '.js-enabled' to <html> element
+    //   document.documentElement.classList.add('js-enabled');
+    </script>
+    <style>
+      /* Ensure elements load hidden before ScrollReveal runs */
+      /* .js-enabled .fooReveal { visibility: hidden; } */
+      .box { width: 1000px; margin: 0 auto; }
+      .fooReveal,.barReveal { float: left; width: 20%; height: 200px; margin: 2.5%; border-radius: 5px; background: #8b4; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <!-- All the things... -->
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+      <div class="fooReveal"></div>
+      <div class="barReveal"></div>
+  </div>
+ 
+    <script src="dist/scrollreveal.min.js"></script>
+    <script>
+        var fooReveal = {
+        delay    : 200,
+        distance : '90px',
+        easing   : 'ease-in-out',
+        rotate   : { z: 10 },
+        scale    : 1.1
+        };
+      window.sr = ScrollReveal({ reset: true });
+      sr.reveal('.fooReveal', fooReveal);
+      sr.reveal('.barReveal', { delay: 500, scale: 0.9 } );   
+    </script>
+  </body>
+</html>               
