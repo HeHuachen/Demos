@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>汉诺塔演示</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>汉诺塔演示</h1>
+        <div id="control">
+            <input type="number" value="4">
+            <button id="init">Init</button>
+            <button id="run">Run</button>
+        </div>
+        <div class="hanoi-wrap">
+            <div id="hanoi">
+                <div id="a" class="base"><div></div></div>
+                <div id="b" class="base"><div></div></div>
+                <div id="c" class="base"><div></div></div>
+                <div id="slide-blocks">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var Hanoi = {};
+        //初始化
+        Hanoi.initBlock = function (num) {
+            var baseWidth = $('#a').width();
+            var baseLeft = $('#a').position().left;
+            var baseTop = $('#a').position().top;
+            var baseHeight = 20;
+            var widthStep = baseWidth * 2 / 3 / num;
+
+            for (var i = 1; i <= num; i++) {
+                this.createBlock({
+                    order: (num - i + 1),
+                    width: baseWidth - i * widthStep,
+                    top: baseTop - i * baseHeight - 1 * i,
+                    left: baseLeft + i * widthStep / 2,
+                })
+            }
+        }
+        //创建盘子
+        Hanoi.createBlock = function (position) {
+            $('<div>').addClass('block block' + position.order).css({
+                top: position.top,
+                left: position.left,
+                width: position.width,
+            }).appendTo($('#slide-blocks'));
+        }
+        Hanoi.move = function (n, a, b, c) {
+            if ( n > 0 ) {
+                Hanoi.move(n - 1, a, c, b);
+                Hanoi.move(n - 1, b, a, c);
+            }
+        }
+
+
+        $(function () {
+            $("#init").click(function () {
+                $("#slide-blocks").empty();
+                Hanoi.initBlock($('input').val());
+            })
+        })
+    </script>
+</body>
+</html>
