@@ -27,44 +27,261 @@
         </div>
     </div>
     <script>
-        var Hanoi = {};
-        //初始化
-        Hanoi.initBlock = function (num) {
-            var baseWidth = $('#a').width();
-            var baseLeft = $('#a').position().left;
-            var baseTop = $('#a').position().top;
-            var baseHeight = 20;
-            var widthStep = baseWidth * 2 / 3 / num;
+        let Hanoi = {};
 
-            for (var i = 1; i <= num; i++) {
-                this.createBlock({
+        //动画数组
+        Hanoi.runArr = [];
+        //动画顺序
+        Hanoi.runOrder = 0;
+
+        //3个底座、名字、顺序
+        [Hanoi.A, Hanoi.B, Hanoi.C] = [[], [], []];
+        [Hanoi.A.name, Hanoi.B.name, Hanoi.C.name] = ['A', 'B', 'C'];
+        [Hanoi.A.val, Hanoi.B.val, Hanoi.C.val] = [1, 2, 3];
+        //底座top
+        Hanoi.defTop = 390;
+        //盘子高度
+        Hanoi.height = 20;
+        //动画中
+        Hanoi.isRun = false;
+        //结束
+        Hanoi.complete = false;
+        console.log(Hanoi)
+        Hanoi.default = {
+            speed: 500, //动画速度
+            interval: 97.5, //水平间隔
+        }
+        //初始化
+        Hanoi.initBlock = (num) => {
+            let baseWidth = 180;
+            let baseLeft = 15;
+            let widthStep = baseWidth * 2 / 3 / num;
+            // 清空盘子数组
+            Hanoi.A.length = 0;
+            Hanoi.B.length = 0;
+            Hanoi.C.length = 0;
+
+            Hanoi.runArr.length = 0;
+
+            Hanoi.isRun = false;
+
+            for (let i = 1; i <= num; i++) {
+                Hanoi.createBlock({
                     order: (num - i + 1),
                     width: baseWidth - i * widthStep,
-                    top: baseTop - i * baseHeight - 1 * i,
+                    top: Hanoi.defTop - i * Hanoi.height - 1 * i,
                     left: baseLeft + i * widthStep / 2,
                 })
             }
         }
         //创建盘子
-        Hanoi.createBlock = function (position) {
+        Hanoi.createBlock = (position) => {
             $('<div>').addClass('block block' + position.order).css({
                 top: position.top,
                 left: position.left,
                 width: position.width,
             }).appendTo($('#slide-blocks'));
+            Hanoi.A.push('.block' + position.order);
         }
-        Hanoi.move = function (n, a, b, c) {
+        //获取当前盘子高度
+        Hanoi.getArrCurTop = (arr) => {
+            let length = arr.length;
+            if (length == 0) {
+                return Hanoi.defTop;
+            } else {
+                return Hanoi.defTop - length * Hanoi.height;
+            }
+        }
+        //获取目标盘子高度
+        Hanoi.getArrToTop = (arr) => {
+            let length = arr.length;
+            return Hanoi.defTop - length * Hanoi.height;
+        }
+        //动画
+        // from,to, 【A, B, C】
+        // options 设置
+        Hanoi.run = (from, to, options) => {
+            if (from.length == 0) {
+                return;
+            }
+            let opt = $.extend({}, Hanoi.default, options);
+            // 获取当前高度
+            let fTop = Hanoi.getArrCurTop(from);
+            // 获取要移动盘子
+            let fElem = from.pop();
+            // 获取目标位置高度
+            let tTop = Hanoi.getArrToTop(to);
+            // 将盘子放入目标
+            to.push(fElem);
+            // 移动步数
+            let step = from.val - to.val;
+            // 移动方向
+            let direction = step > 0 ? -1 : 1;
+            // 动画数组元素
+            let runItem = {
+                elem: fElem,
+                from: from.name,
+                to: to.name,
+                options: opt,
+            }
+            // 跨中间移动考虑B
+            if (Math.abs(step) == 1) {
+                if (fTop == tTop) {
+                    // 横移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            left: direction * opt.interval,
+                        }
+                    }));
+                } else if (fTop < tTop) {
+                    console.log( direction )
+                    console.log( opt )
+                    // 横移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            left: direction * opt.interval,
+                        },
+                    }));
+                    // 下移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: tTop,
+                        },
+                    }));
+                } else {
+                    // 上移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: tTop,
+                        },
+                    }));
+                    // 横移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            left: direction * opt.interval,
+                        },
+                    }));
+                    // 下移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: tTop,
+                        },
+                    }));
+                }
+            } else {
+                let bTop = Hanoi.getArrToTop(Hanoi.B);
+                let min = Math.min.call({}, bTop, fTop, tTop);
+                if (min == bTop) {
+                    // 上移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: min
+                        },
+                    }));
+                    // 横移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            left: direction * opt.interval * 2,
+                        },
+                    }));
+                    // 下移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: tTop,
+                        },
+                    }));
+                } else if (min == fTop) {
+                    console.log( direction )
+                    console.log( opt )  
+                    console.log( direction * (opt.interval * 2) )  
+                    // 横移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            left: direction * opt.interval * 2,
+                        },
+                    }));
+                    // 下移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: tTop,
+                        },
+                    }));
+                } else if (min == tTop) {
+                    // 上移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            top: min
+                        },
+                    }));
+                    // 横移
+                    Hanoi.runArr.push($.extend({}, runItem, {
+                        end: {
+                            left: direction * opt.interval * 2,
+                        },
+                    }));
+                }
+            }
+            console.log(Hanoi.runArr);
+        }
+        //播放动画
+        Hanoi.play = () => {
+            if (!Hanoi.isRun) return;
+            if (Hanoi.order < Hanoi.runArr.length) {
+                let time = Hanoi.runArr[Hanoi.order].options.speed;
+                Hanoi.run.move(Hanoi.runArr[Hanoi.order], Hanoi.order);
+                Hanoi.order++;
+                setTimeout(Hanoi.play, time < 300 ? 300 : time);
+            } else {
+                setTimeout(() => {
+                    Hanoi.complete = true;
+                    console.log('success');
+                }, 1000);
+            }
+        }
+        //执行播放开始
+        Hanoi.run.play = () => {
+            console.log(Hanoi.runArr.length)
+            if (Hanoi.runArr.length > 0 && Hanoi.order == 0) {
+                Hanoi.play();
+            }
+        }
+        //dom 移动
+        Hanoi.run.move = (param, order) => {
+            if ('top' in param.end) {
+                $(param.elem).animate({
+                    top: param.end.top
+                }, param.options.speed);
+            } else {
+                $(param.elem).animate({
+                    left: "+=" + param.end.left + 'px'
+                }, param.options.speed);
+            }
+        } 
+        //开始
+        Hanoi.start = (n) => {
+            Hanoi.move(n, Hanoi.A, Hanoi.B, Hanoi.C);
+        }
+        //移动盘子
+        Hanoi.move = (n, a, b, c) => {
             if ( n > 0 ) {
                 Hanoi.move(n - 1, a, c, b);
+                Hanoi.run(a, c, {});
                 Hanoi.move(n - 1, b, a, c);
             }
         }
 
 
-        $(function () {
-            $("#init").click(function () {
+        $(() => {
+            $("#init").click(() => {
                 $("#slide-blocks").empty();
                 Hanoi.initBlock($('input').val());
+            })
+            $('#run').click(() => {
+                if (!Hanoi.isRun) {
+                    Hanoi.isRun = true;
+                    Hanoi.start($('input').val());
+                    Hanoi.run.play();
+                }
             })
         })
     </script>
