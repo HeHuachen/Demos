@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -119,4 +120,127 @@
         })
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My first Vue app</title>
+  <script src="https://unpkg.com/vue"></script>
+  <style>
+      .del { color: #f00; }
+  </style>
+</head>
+<body>
+    <div id="demo">
+        <p v-on:click="doThis">{{message}}</p>
+        <input v-model="newItem" v-on:keyup.enter="addNew" />
+        <div>
+            <ul>
+                <li v-for="item in items" v-on:click="doThis(item)" v-bind:class="{del: item.isShow}">
+                    {{item.message}}
+                </li> 
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <div id="demo2">
+        <label>FirstName: </label><br><input v-model = 'firstName'><br>
+        <label>LastName: </label><br><input v-model = 'lastName'><br>
+        <label>FullName: </label><br><input v-model.lazy = 'fullName'>
+    </div>
+    <hr>
+    <div id="demo3">
+        <button @click="addCount">Add 1</button>
+        <p>This button has been clicked {{ count }} times</p>
+        <a href="###" @click='warn("connot jump",$event)'>jump</a>
+        <div :style='fatherStyle' @click='warn("father")'>
+            <a :style="childStyle" href="###" @click.prevent.stop.self='warn("children")'>jump</a>
+        </div>
+        <input @click.ctrl='warn("enter")' placeholder="enter">
+        <br>
+        <br>
+        <input type="radio" v-model="picked" v-bind:value="a">
+        <label for="">{{a}}</label>
+        <input type="radio" v-model="picked" v-bind:value="b">
+        <label for="">{{b}}</label>
+        <div>Picked: {{ picked }}</div>
+    </div>
+    <script>
+        var demo = new Vue({
+            el: '#demo',
+            data: {
+                message: "Hello Vue!",
+                isRed: false,
+                items: [
+                    {message: "open the door",
+                    isShow:true},
+                    {message: "close the door",
+                    isShow:true}
+                ],
+                newItem: "",
+            },
+            methods: {
+                doThis: function (item) {
+                    console.log(item.message);
+                    item.isShow = !item.isShow;
+                },
+                addNew: function () {
+                    console.log(this.newItem);
+                    this.items.push({message: this.newItem, isShow: true});
+                    this.newItem = "";
+                }
+            }
+        })
+        var demo2 = new Vue({
+            el: '#demo2',
+            data: {
+                firstName: "He",
+                lastName: "Huachen"
+            },
+            computed: {
+                fullName: {
+                    get: function() {
+                        return this.firstName + " " + this.lastName;
+                    },
+                    set: function(newVal) {
+                        var names = newVal.split(" ");
+                        this.firstName = names[0];
+                        this.lastName = names[names.length - 1];
+                    }
+                }
+            }
+        })
+        var demo3 = new Vue({
+            el: '#demo3',
+            data: {
+                count: 0,
+                fatherStyle: {
+                    width: '200px',
+                    height: '200px',
+                    background: '#a26'
+                },
+                childStyle: {
+                    display: 'block',
+                    width: '100px',
+                    height: '100px',
+                    background: '#2f9'
+                },
+                picked: '',
+                a: 'Y',
+                b: 'N'
+            },
+            methods: {
+                addCount: function() {
+                    this.count += 1;
+                },
+                warn: function(msg, event) {
+                    if (event) event.preventDefault();
+                    alert(msg);
+                }
+            }
+        })
+    </script>
+</body>
+>>>>>>> b57efa4bcc70cf410769542d0855222fdda3a028
 </html>
