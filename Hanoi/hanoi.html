@@ -10,7 +10,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>汉诺塔演示</h1>
+        <h1>汉诺塔演示small</h1>
+        <p>思路源码引自<a href="https://github.com/abel533/hanoi" target="_block">https://github.com/abel533/hanoi</a></p>
+        <p>动画队列存进数组的想法受益匪浅，Thanks！</p>
+        <ol>
+            <li>将hanoi的每一步的动作变化参数存进对象；</li>
+            <li>将这一个个对象按顺序存进数组；</li>
+            <li>创建一个计数器，映射动画队列；</li>
+            <li>利用setTimeOut定时器递归执行动画操作，最终实现顺序播放。</li>
+        </ol>
+        <hr>
         <div id="control">
             <input type="number" value="4">
             <button id="init">Init</button>
@@ -46,10 +55,9 @@
         Hanoi.isRun = false;
         //结束
         Hanoi.complete = false;
-        console.log(Hanoi)
         Hanoi.default = {
             speed: 500, //动画速度
-            interval: 97.5, //水平间隔
+            interval: 195, //水平间隔
         }
         //初始化
         Hanoi.initBlock = (num) => {
@@ -62,7 +70,7 @@
             Hanoi.C.length = 0;
 
             Hanoi.runArr.length = 0;
-
+            Hanoi.runOrder = 0;
             Hanoi.isRun = false;
 
             for (let i = 1; i <= num; i++) {
@@ -84,20 +92,13 @@
             Hanoi.A.push('.block' + position.order);
         }
         //获取当前盘子高度
-        Hanoi.getArrCurTop = (arr) => {
+        Hanoi.getArrCurTop = (arr, target) => {
             let length = arr.length;
-            if (length == 0) {
-                return Hanoi.defTop;
-            } else {
-                return Hanoi.defTop - length * Hanoi.height;
-            }
+            let top = target === 'from' ? Hanoi.defTop - length * (Hanoi.height + 1)
+            : Hanoi.defTop - (length + 1) * (Hanoi.height + 1);
+            return top;
         }
-        //获取目标盘子高度
-        Hanoi.getArrToTop = (arr) => {
-            let length = arr.length;
-            return Hanoi.defTop - length * Hanoi.height;
-        }
-        //动画
+        // 执行算法获得动画队列
         // from,to, 【A, B, C】
         // options 设置
         Hanoi.run = (from, to, options) => {
@@ -106,11 +107,11 @@
             }
             let opt = $.extend({}, Hanoi.default, options);
             // 获取当前高度
-            let fTop = Hanoi.getArrCurTop(from);
+            let fTop = Hanoi.getArrCurTop(from, 'from');
             // 获取要移动盘子
             let fElem = from.pop();
             // 获取目标位置高度
-            let tTop = Hanoi.getArrToTop(to);
+            let tTop = Hanoi.getArrCurTop(to, 'to');
             // 将盘子放入目标
             to.push(fElem);
             // 移动步数
@@ -134,8 +135,6 @@
                         }
                     }));
                 } else if (fTop < tTop) {
-                    console.log( direction )
-                    console.log( opt )
                     // 横移
                     Hanoi.runArr.push($.extend({}, runItem, {
                         end: {
@@ -169,7 +168,7 @@
                     }));
                 }
             } else {
-                let bTop = Hanoi.getArrToTop(Hanoi.B);
+                let bTop = Hanoi.getArrCurTop(Hanoi.B, 'to');
                 let min = Math.min.call({}, bTop, fTop, tTop);
                 if (min == bTop) {
                     // 上移
@@ -190,10 +189,7 @@
                             top: tTop,
                         },
                     }));
-                } else if (min == fTop) {
-                    console.log( direction )
-                    console.log( opt )  
-                    console.log( direction * (opt.interval * 2) )  
+                } else if (min == fTop) { 
                     // 横移
                     Hanoi.runArr.push($.extend({}, runItem, {
                         end: {
@@ -221,15 +217,14 @@
                     }));
                 }
             }
-            console.log(Hanoi.runArr);
         }
         //播放动画
         Hanoi.play = () => {
             if (!Hanoi.isRun) return;
-            if (Hanoi.order < Hanoi.runArr.length) {
-                let time = Hanoi.runArr[Hanoi.order].options.speed;
-                Hanoi.run.move(Hanoi.runArr[Hanoi.order], Hanoi.order);
-                Hanoi.order++;
+            if (Hanoi.runOrder < Hanoi.runArr.length) {
+                let time = Hanoi.runArr[Hanoi.runOrder].options.speed;
+                Hanoi.run.move(Hanoi.runArr[Hanoi.runOrder], Hanoi.runOrder);
+                Hanoi.runOrder++;
                 setTimeout(Hanoi.play, time < 300 ? 300 : time);
             } else {
                 setTimeout(() => {
@@ -240,8 +235,8 @@
         }
         //执行播放开始
         Hanoi.run.play = () => {
-            console.log(Hanoi.runArr.length)
-            if (Hanoi.runArr.length > 0 && Hanoi.order == 0) {
+            if (Hanoi.runArr.length > 0 && Hanoi.runOrder == 0) {
+                console.log('ok')
                 Hanoi.play();
             }
         }
@@ -280,6 +275,7 @@
                 if (!Hanoi.isRun) {
                     Hanoi.isRun = true;
                     Hanoi.start($('input').val());
+                    console.log(Hanoi.runArr);
                     Hanoi.run.play();
                 }
             })

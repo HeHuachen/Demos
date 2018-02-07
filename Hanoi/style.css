@@ -6,6 +6,12 @@ h1 {
     padding: .5em 0;
     border-bottom: 1px solid #eee;
 }
+hr {
+    margin: 1.5em 0;
+    border: 0;
+    height: 1px;
+    background: #eee;
+}
 input,
 button {
     border: 1px solid #ccc;
@@ -15,6 +21,9 @@ button {
 }
 button {
     background: #dedede;
+}
+p {
+    margin-bottom: 20px;
 }
 
 .hanoi-wrap {
