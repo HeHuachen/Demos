@@ -1,14 +1,18 @@
-<<<<<<< HEAD
 <template>
   <div id="app">
     <img src="./assets/logo.png">
+    <hello></hello>
     <router-view/>
   </div>
 </template>
 
 <script>
+import hello from './components/HelloWorld'
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    hello
+  }
 }
 </script>
 
@@ -22,28 +26,3 @@ export default {
   margin-top: 60px;
 }
 </style>
-=======
-<template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'app'
-}
-</script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
->>>>>>> b57efa4bcc70cf410769542d0855222fdda3a028
