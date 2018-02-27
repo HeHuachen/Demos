@@ -1,12 +1,11 @@
 <template>
-    <div class="header">
-        I am header!
+    <div>
+        I am goods
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-export default {
-}
+export default {}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
