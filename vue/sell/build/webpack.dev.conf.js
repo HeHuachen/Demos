@@ -2,38 +2,20 @@
 const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
-const express = require('express')
 const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.conf')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const express = require('express')
+const app = express()
 
-var app = express()
 var appData = require('../data.json');
 var seller = appData.seller;
 var goods = appData.goods;
 var ratings = appData.ratings;
 
 var apiRoutes = express.Router();
-apiRoutes.get('/seller',function (req, res) {
-    res.json({
-        errno: 0,
-        data: seller
-    })
-});
-apiRoutes.get('/goods',function (req, res) {
-    res.json({
-        errno: 0,
-        data: goods
-    })
-});
-apiRoutes.get('/ratings',function (req, res) {
-    res.json({
-        errno: 0,
-        data: ratings
-    })
-});
 app.use('/api',apiRoutes);
 
 const HOST = process.env.HOST
@@ -63,6 +45,26 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
+    },
+    before(app) {
+        app.get('/api/seller', (req, res) => {
+            res.json({
+                errno: 0,
+                data: seller
+            })
+        }),
+        app.get('/api/goods', (req, res) => {
+            res.json({
+                errno: 0,
+                data: goods
+            })
+        }),
+        app.get('/api/ratings', (req, res) => {
+            res.json({
+                errno: 0,
+                data: ratings
+            })
+        })
     }
   },
   plugins: [
