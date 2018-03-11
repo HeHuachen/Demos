@@ -59,4 +59,14 @@ export default {
     bg-image('invoice_3')
   &.special-3
     bg-image('special_3')
+  &.decrease-4
+    bg-image3x('decrease_4')
+  &.discount-4
+    bg-image3x('discount_4')
+  &.guarantee-4
+    bg-image3x('guarantee_4')
+  &.invoice-4
+    bg-image3x('invoice_4')
+  &.special-4
+    bg-image3x('special_4')
 </style>
